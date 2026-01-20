@@ -16,6 +16,17 @@ def enableHaptics(effectName, effectDetails, setVal, sm):
   if setVal == 0 and isGlobalEffect == False:
     removeEffect(effectName)
 
+def enableHaptics_objects(objectname,enable):
+  message = md.M_HAPTICS_SET_ENABLED()
+  message.header.msg_type = c_int(md.HAPTICS_SET_ENABLED)
+  name = create_string_buffer(bytes(objectname, 'utf-8'), md.MAX_STRING_LENGTH)
+  namePtr = (c_char_p)(addressof(name))
+  message.objectName = namePtr.value
+  message.enabled = c_int(enable)
+  packet = MR.makeMessage(message)
+  MR.sendMessage(packet)
+  return packet
+
 def makeEffect(effectName, effectType, effectFunction, sm):
   if effectType == "viscousField":
     globals()[effectFunction](effectName, sm)
@@ -100,6 +111,27 @@ def unfreezeTool(name):
   freezeNamePtr = (c_char_p) (addressof(freezeName))
   unfreeze.effectName = freezeNamePtr.value 
   packet = MR.makeMessage(unfreeze)
+  MR.sendMessage(packet)
+  return packet
+
+def boundingPlane(stiffness,width, height): #this message is being sent but the robot haptics do not change. need to debug Ivan 12/3/25
+  plane = md.M_HAPTICS_BOUNDING_PLANE()
+  plane.header.msg_type = c_int(md.HAPTICS_BOUNDING_PLANE)
+  plane.stiffness = stiffness
+  plane.bWidth = c_double(width)
+  plane.bHeight = c_double(height)
+  packet = MR.makeMessage(plane)
+  MR.sendMessage(packet)
+  return packet
+
+def setStiffness(name,stiffness): #this message is being sent but the robot haptics do not change. need to debug Ivan 12/3/25
+  stiff = md.M_HAPTICS_SET_STIFFNESS()
+  stiff.header.msg_type = c_int(md.HAPTICS_SET_STIFFNESS)
+  stiffName = create_string_buffer(bytes(name, 'utf-8'), md.MAX_STRING_LENGTH)
+  stiffNamePtr = (c_char_p) (addressof(stiffName))
+  stiff.objectName = stiffNamePtr.value
+  stiff.stiffness = c_double(stiffness)
+  packet = MR.makeMessage(stiff)
   MR.sendMessage(packet)
   return packet
 

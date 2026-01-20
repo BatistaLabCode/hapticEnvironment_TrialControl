@@ -63,6 +63,43 @@ def makeBox(objectName, size, position, color, enabled):
   MR.sendMessage(packet)
   enableGraphics(objectName, enabled)
 
+def makeTorus(objectName, radius, position, color, enabled):
+  torus = md.M_GRAPHICS_SHAPE_TORUS()
+  torus.header.msg_type = c_int(md.GRAPHICS_SHAPE_TORUS)
+  name = create_string_buffer(bytes(objectName, 'utf-8'), md.MAX_STRING_LENGTH)
+  namePtr = (c_char_p)(addressof(name))
+  torus.objectName = namePtr.value
+  torus.innerRadius = c_double(radius[0])
+  torus.outerRadius = c_double(radius[1])
+  torus.localPosition = (c_double * 3)(position[0], position[1], position[2])
+  torus.color = (c_float * 4)(color[0], color[1], color[2], color[3])
+  packet = MR.makeMessage(torus)
+  MR.sendMessage(packet)
+  enableGraphics(objectName, enabled)
+
+def makePipe(objectName):
+
+
+  pipe = md.M_GRAPHICS_PIPE()
+  pipe.header.msg_type = c_int(md.GRAPHICS_PIPE)
+  name = create_string_buffer(bytes(objectName, 'utf-8'), md.MAX_STRING_LENGTH)
+  namePtr = (c_char_p)(addressof(name))
+  pipe.objectName = namePtr.value
+
+  pipe.aLength = 40
+  pipe.shaftRadius = 3
+  pipe.lengthTip = 10
+  pipe.radiusTip = 3
+  pipe.bidirectional = 1
+  pipe.numSides = 8
+  pipe.direction = (c_double * 3)(0.0, -1.0, 0.0)
+  pipe.position = (c_double * 3)(0.0, 0.0, 0.0)
+  pipe.color = (c_float * 4)(1, 0, 0, 1)
+
+  packet = MR.makeMessage(pipe)
+  MR.sendMessage(packet)
+  enableGraphics(objectName, 1)
+
 def setBackground(red, green, blue):
   bg = md.M_GRAPHICS_CHANGE_BG_COLOR()
   bg.header.msg_type = c_int(md.GRAPHICS_CHANGE_BG_COLOR)

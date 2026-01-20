@@ -1106,11 +1106,13 @@ class struct_anon_31(Structure):
 
 struct_anon_31.__slots__ = [
     'header',
+    'stiffness',
     'bWidth',
     'bHeight',
 ]
 struct_anon_31._fields_ = [
     ('header', MSG_HEADER),
+    ('stiffness', c_int),
     ('bWidth', c_double),
     ('bHeight', c_double),
 ]
